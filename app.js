@@ -2,19 +2,62 @@
 var budgetController = (function() {
     //Income FUnction constructor
     var Income = function (id, description, value) {
-
+        this.id = id;
         this.description = description;
         this.value = value;
     };
 
-    var Expense = function (expenseType, expenseValue) {
-        this.expenseType = expenseType,
-        this.expenseValue = expenseValue
+    //Expense FUnction constructor
+    var Expense = function (id, description, value) {
+        this.id = id;
+        this.description = description;
+        this.value = value;
     };
+
+    //Storing all instances of the constructors and their totals
+    var data = {
+        allItems: {
+            inc: [],
+            exp: []
+        },
+        totals: {
+            inc: 0,
+            exp: 0
+        }
+        
+    }; 
+
     return {
-        incomeConstructor: Income,
-        expenseConstructor: Expense
+        addNewItem: function(type, des, val){
+            var newItem, ID;
+              
+            // Create new ID
+            if(data.allItems[type].length > 0 ){
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            } else{
+                ID = 0;
+            }
+            
+            // Create new item based on "inc" or "exp"
+            if(type == 'inc'){
+                newItem = new Income(ID, des, val);
+            }
+            else if (type == 'exp') {
+                newItem = new Income(ID, des, val);
+            }
+            
+            // Push 
+            data.allItems[type].push(newItem);
+
+            // Returnnew Item
+            return newItem;
+        },
+
+        testing: function(){
+            console.log(data);
+        }
     }
+    
 
 
 })();
@@ -35,7 +78,7 @@ var UIController = (function() {
     return {
         getInput: function(){
             return {
-                type: document.querySelector(DOMstrings.inputType).value,
+                type: document.querySelector(DOMstrings.inputType).value, // it will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: document.querySelector(DOMstrings.inputValue).value
             }
@@ -53,9 +96,10 @@ var controller = (function(budgetCtrl, UIctrl) {
 
     var setEventListener = function() {
         var DOM = UIctrl.getDOMstrings();
+        //Btn click
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+        //key press
         document.addEventListener('keypress', function (event) {
-
             if (event.keyCode === 13 || event.which === 13) {
                 ctrlAddItem();
             }
@@ -63,19 +107,12 @@ var controller = (function(budgetCtrl, UIctrl) {
     }
 
     var ctrlAddItem = function () {
+        var input, newItem;
         //1. get the input items 
-        var input = UIctrl.getInput();
-        // if(DOM.inputType == 'inc'){
-        //     var check1 = budgetCtrl.incomeConstructor;
-        //     var income1 
-        // }
-        // if(DOM.inputType == 'exp'){
-        //     var check2 = budgetCtrl.expenseConstructor;
-        // }
-        
+        input = UIctrl.getInput();
         
         //2.add item to budgetController
-        
+        newItem = budgetCtrl.addNewItem(input.type, input.description, input.value);
 
         //3.add item to UIController
 
@@ -84,6 +121,7 @@ var controller = (function(budgetCtrl, UIctrl) {
         //5.display the budget on the UI
     };
     return {
+        // Iitialization Function
         init: function () {
             console.log("App started");
             setEventListener();
