@@ -39,17 +39,17 @@ var budgetController = (function() {
             }
             
             // Create new item based on "inc" or "exp"
-            if(type == 'inc'){
+            if(type === 'inc'){
                 newItem = new Income(ID, des, val);
             }
-            else if (type == 'exp') {
+            else if (type === 'exp') {
                 newItem = new Income(ID, des, val);
             }
             
-            // Push 
+            // Push it to our data structure
             data.allItems[type].push(newItem);
 
-            // Returnnew Item
+            // Return the new element created
             return newItem;
         },
 
@@ -61,7 +61,8 @@ var budgetController = (function() {
 
 
 })();
- 
+
+
 
 
 // UI Module
@@ -76,6 +77,7 @@ var UIController = (function() {
 
      
     return {
+        // Get the input values when the user clicks the add btn
         getInput: function(){
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // it will be either inc or exp
@@ -84,11 +86,20 @@ var UIController = (function() {
             }
         },
 
+        // To add new Items to DOM
+        addListItem: function() {
+            var income = document.querySelector('.item__description').innerHTML = budgetCtrl.addNewItem().newItem.description;
+        },
+
         getDOMstrings: function(){
             return DOMstrings;
         } 
     }
 })();
+
+
+
+
 
 
 // Global Controller Module
@@ -108,14 +119,15 @@ var controller = (function(budgetCtrl, UIctrl) {
 
     var ctrlAddItem = function () {
         var input, newItem;
-        //1. get the input items 
+        //1. get the inputs value from DOM 
         input = UIctrl.getInput();
         
         //2.add item to budgetController
         newItem = budgetCtrl.addNewItem(input.type, input.description, input.value);
-
+        // budgetCtrl.testing();
+        
         //3.add item to UIController
-
+        // UIController.addListItems();
         //4.calculate budget
 
         //5.display the budget on the UI
